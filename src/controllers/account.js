@@ -1,11 +1,18 @@
 const knex = require("../database/connection");
+const { messagejson } = require("../utils/utils");
 
 const getAllAccounts = async (req, res) => {
-    return res.json("Ok")
+    // return messagejson(res, 200, "ok")
 }
 
 const createAccount = async (req, res) => {
-
+    const { body: { nome, cpf, data_nascimento, email, telefone, senha } } = req
+    
+    try {
+       return messagejson(res, 200, "ok")
+    } catch (error) {
+        return messagejson(res, 500, "Erro interno do servidor.")
+    }
 }
 
 const updateAccount = async (req, res) => {

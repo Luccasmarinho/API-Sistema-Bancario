@@ -13,29 +13,14 @@ const validateBody = (schema) => async (req, res, next) => {
         const splitError = error.message.split(" ")
         const characters = `${splitError.find((e) => e == Number(e))} caracteres`
 
-        // arrayErrors.forEach((e) => {
-        //     if (e[0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "cpf") return messageJson(res, 400, `${e[1].replace("$", fieldName)} ${characters}`)
-
-        //     if (e[0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "senha") return messageJson(res, 400, `${e[1].replace("$", fieldName)} ${characters}`)
-
-        //     if (e[0] == typeError) return messageJson(res, 400, `${e[1].replace("$", fieldName)}`)
-        // })
-
-
-        for (let i = 0; i < arrayErrors.length; i++) {
-            if (arrayErrors[i][0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "cpf") {
-                return messageJson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)} ${characters}`)
-            }
-
-            if (arrayErrors[i][0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "senha") {
-                return messageJson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)} ${characters}`)
-            }
-
-            if (arrayErrors[i][0] == typeError) {
-                return messageJson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)}`)
-            }
+        for(let i of arrayErrors) {
+            if (i[0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "cpf") return messageJson(res, 400, `${i[1].replace("$", fieldName)} ${characters}`)
+            
+            if (i[0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "senha") return messageJson(res, 400, `${i[1].replace("$", fieldName)} ${characters}`)
+            
+            if (i[0] == typeError) return messageJson(res, 400, `${i[1].replace("$", fieldName)}`)
         }
-
+    
         return messageJson(res, 500, "Erro interno do servidor.")
     }
 }

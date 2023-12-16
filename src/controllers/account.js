@@ -29,6 +29,10 @@ const createAccount = async (req, res) => {
         delete insertUser.senha  
        return messageJson(res, 200, insertUser)
     } catch (error) {
+        const codeError = "42P01"
+        const errorName = error.message.split(" ")[3]
+        if (codeError) return messageJson(res, 400, `Relação '${errorName}' não existe.`)
+
         return messageJson(res, 500, "Erro interno do servidor.")
     }
 }

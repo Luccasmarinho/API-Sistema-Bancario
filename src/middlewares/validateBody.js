@@ -1,4 +1,4 @@
-const { messagejson } = require("../utils/utils");
+const { messageJson } = require("../utils/utils");
 const { objError } = require("../schemas/schemaUser")
 
 
@@ -13,24 +13,30 @@ const validateBody = (schema) => async (req, res, next) => {
         const splitError = error.message.split(" ")
         const characters = `${splitError.find((e) => e == Number(e))} caracteres`
 
+        // arrayErrors.forEach((e) => {
+        //     if (e[0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "cpf") return messageJson(res, 400, `${e[1].replace("$", fieldName)} ${characters}`)
+
+        //     if (e[0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "senha") return messageJson(res, 400, `${e[1].replace("$", fieldName)} ${characters}`)
+
+        //     if (e[0] == typeError) return messageJson(res, 400, `${e[1].replace("$", fieldName)}`)
+        // })
+
+
         for (let i = 0; i < arrayErrors.length; i++) {
             if (arrayErrors[i][0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "cpf") {
-                return messagejson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)} ${characters}`)
+                return messageJson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)} ${characters}`)
             }
 
             if (arrayErrors[i][0] == typeError && (typeError == "string.min" || typeError == "string.max") && fieldName == "senha") {
-                return messagejson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)} ${characters}`)
+                return messageJson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)} ${characters}`)
             }
 
-
             if (arrayErrors[i][0] == typeError) {
-                return messagejson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)}`)
+                return messageJson(res, 400, `${arrayErrors[i][1].replace("$", fieldName)}`)
             }
         }
 
-        return messagejson(res, 500, "Erro interno do servidor.")
-        // const [bodyError, ...text] = error.message.split(" ")
-        // return messagejson(res, 500, `${bodyError.replaceAll("\"", "")} ${text.join(" ")}`)
+        return messageJson(res, 500, "Erro interno do servidor.")
     }
 }
 

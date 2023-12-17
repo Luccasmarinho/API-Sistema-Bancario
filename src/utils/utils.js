@@ -30,10 +30,7 @@ const utils = {
             if (queryVerify.rows.length > 0) columnName.push(arrayValues[i][0])
     
             const [query] = queryVerify.rows
-            if (query) {
-                arrayQuery.push(query)
-                delete query.senha
-            }
+            if (query) arrayQuery.push(query)
         }
     
         const status = arrayQuery.length == 0 ? false : true

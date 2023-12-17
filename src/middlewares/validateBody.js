@@ -1,13 +1,12 @@
 const { messageJson } = require("../utils/utils");
-const { objError } = require("../schemas/schemaUser")
-
+const schemas = require("../schemas/schemaUser");
 
 const validateBody = (schema) => async (req, res, next) => {
     try {
         await schema.validateAsync(req.body)
         return next()
     } catch (error) {
-        const arrayErrors = Object.entries(objError)
+        const arrayErrors = Object.entries(schemas.error)
         const typeError = error.details[0].type
         const fieldName = error.message.split(" ")[0].replaceAll("\"", "")
         const splitError = error.message.split(" ")

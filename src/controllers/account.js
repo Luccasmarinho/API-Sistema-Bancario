@@ -8,7 +8,7 @@ const getAllAccounts = async (req, res) => {
 }
 
 const createAccount = async (req, res) => {
-    const { body: { nome, cpf, data_nascimento, email, telefone, senha } } = req
+    const { body: {cpf, email, senha } } = req
 
     try {
         const { status, message }  = await verifySingleField("usuarios", req.body, [email, cpf])
@@ -21,12 +21,12 @@ const createAccount = async (req, res) => {
 
         const user = {
             ...req.body,
-            senha: encryptedPass
+            senha: encryptedPass,
+            saldo: 0
         }
 
-        const [insertUser] = await knex("usuarios").insert(user).returning("*")
+        const [insertUser] = await knex("usuarios").insert(user).returning(["id", "nome", "email", "saldo"])
 
-        delete insertUser.senha  
        return messageJson(res, 200, insertUser)
     } catch (error) {
         const codeError = "42P01"

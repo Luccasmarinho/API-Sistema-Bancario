@@ -1,4 +1,5 @@
 const knex = require("../database/connection");
+const { format } = require("date-fns")
 
 const utils = {
     messageJson: (objRes, status, Mensagem) => {
@@ -44,6 +45,13 @@ const utils = {
             message
         }
     
+        return result
+    },
+    formatDate: () => {
+        const date = new Date()
+
+        const result = format(date, "dd/MM/yyyy, HH:mm:ss")
+
         return result
     }
 }

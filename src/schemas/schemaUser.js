@@ -22,6 +22,12 @@ const schemas = {
         valor: joi.number().min(1).integer().required(),
         senha: joi.string().min(8).max(20).required()
     }),
+    transfer: joi.object({
+        numero_conta_origem: joi.number().positive().integer().required(),
+        numero_conta_destino: joi.number().positive().integer().required(),
+        valor: joi.number().min(1).integer().required(),
+        senha: joi.string().min(8).max(20).required()
+    }),
     error: {
         "string.empty": `O campo '$' não pode estar vazio`,
         "any.required": `O campo '$' é obrigatório`,

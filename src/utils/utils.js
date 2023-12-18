@@ -69,16 +69,32 @@ const utils = {
 
         return result
     },
-    insertValue: async (table, numberAcc, value) => {
-        const objInsert = {
-            numero_conta: numberAcc,
-            valor: value,
-            data: utils.formatDate()
-        }
+    // insertValue: async (table, numberAcc, value) => {
+    //     const objInsert = {
+    //         numero_conta: numberAcc,
+    //         valor: value,
+    //         data: utils.formatDate()
+    //     }
 
-        const insert = await knex(`${table}`).insert(objInsert).returning("*")
+    //     const insert = await knex(`${table}`).insert(objInsert).returning("*")
 
-        return insert
+    //     return insert
+    // }
+    insertValue: async (table, value, numberAccOrigin, numberAccDestiny = "") => {
+        const objInsert = !numberAccDestiny
+            ? {
+                numero_conta: numberAccOrigin,
+                valor: value,
+                data: utils.formatDate()
+            }
+            : {
+                numero_conta_origem: numberAccOrigin,
+                numero_conta_destino: numberAccDestiny,
+                valor: value,
+                data: utils.formatDate()
+            }
+            const insert = await knex(`${table}`).insert(objInsert).returning("*")
+            return insert
     }
 }
 

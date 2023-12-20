@@ -4,7 +4,6 @@ const { hash } = require("bcrypt")
 
 const getAllAccounts = async (req, res) => {
     return messageJson(res, 200, "ok")
-    
 }
 
 const createAccount = async (req, res) => {
@@ -50,7 +49,32 @@ const getBalance = async (req, res) => {
 }
 
 const getExtract = async (req, res) => { 
+    // const depositos = await knex("usuarios")
+    // .select("depositar.*")
+    // .join("depositar", "usuarios.id", "=", "depositar.numero_conta")
+    // .where("usuarios.id", 128)
 
+    // const saques = await knex("usuarios")
+    // .select("sacar.*")
+    // .join("sacar", "usuarios.id", "=", "sacar.numero_conta")
+    // .where("usuarios.id", 128)
+
+    // const transferenciasEnviadas = await knex("usuarios")
+    // .select("transferir.*")
+    // .join("transferir", "usuarios.id", "=", "transferir.numero_conta_origem")
+    // .where("usuarios.id", 128)
+
+    // const transferenciasRecebidas = await knex("usuarios")
+    // .select("transferir.*")
+    // .join("transferir", "usuarios.id", "=", "transferir.numero_conta_destino")
+    // .where("usuarios.id", 128)
+
+    // const obj = {
+    //     depositos,
+    //     saques,
+    //     transferenciasEnviadas,
+    //     transferenciasRecebidas
+    // }
 }
 
 module.exports = {

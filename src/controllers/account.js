@@ -49,32 +49,51 @@ const getBalance = async (req, res) => {
 }
 
 const getExtract = async (req, res) => { 
-    // const depositos = await knex("usuarios")
-    // .select("depositar.*")
-    // .join("depositar", "usuarios.id", "=", "depositar.numero_conta")
-    // .where("usuarios.id", 128)
+    const { query: { mes, ano }, user: { id } } = req
 
-    // const saques = await knex("usuarios")
-    // .select("sacar.*")
-    // .join("sacar", "usuarios.id", "=", "sacar.numero_conta")
-    // .where("usuarios.id", 128)
+    const likeCondition = !mes || mes == null
+    ? `%${ano}%`
+    : `%${mes.padStart(2, "0")}/${ano}%`
 
-    // const transferenciasEnviadas = await knex("usuarios")
-    // .select("transferir.*")
-    // .join("transferir", "usuarios.id", "=", "transferir.numero_conta_origem")
-    // .where("usuarios.id", 128)
+    try {
+        const depositos = await knex("usuarios")
+        .select("depositar.*")
+        .join("depositar", "usuarios.id", "=", "depositar.numero_conta")
+        .where("usuarios.id", id)
+        .whereLike("depositar.data", likeCondition)
 
-    // const transferenciasRecebidas = await knex("usuarios")
-    // .select("transferir.*")
-    // .join("transferir", "usuarios.id", "=", "transferir.numero_conta_destino")
-    // .where("usuarios.id", 128)
+        const saques = await knex("usuarios")
+        .select("sacar.*")
+        .join("sacar", "usuarios.id", "=", "sacar.numero_conta")
+        .where("usuarios.id", id)
+        .whereLike("sacar.data", likeCondition)
 
-    // const obj = {
-    //     depositos,
-    //     saques,
-    //     transferenciasEnviadas,
-    //     transferenciasRecebidas
-    // }
+        const transferenciasEnviadas = await knex("usuarios")
+        .select("transferir.*")
+        .join("transferir", "usuarios.id", "=", "transferir.numero_conta_origem")
+        .where("usuarios.id", id)
+        .whereLike("transferir.data", likeCondition)
+    
+        const transferenciasRecebidas = await knex("usuarios")
+        .select("transferir.*")
+        .join("transferir", "usuarios.id", "=", "transferir.numero_conta_destino")
+        .where("usuarios.id", id)
+        .whereLike("transferir.data", likeCondition)
+
+    
+        const objExtract = {
+            depositos,
+            saques,
+            transferenciasEnviadas,
+            transferenciasRecebidas
+        }
+
+        return messageJson(res, 200, objExtract)
+    } catch (error) {
+        console.log(error);
+        return messageJson(res, 500, "Erro interno do servidor.")
+    }
+   
 }
 
 module.exports = {

@@ -10,11 +10,11 @@ const login = async (req, res) => {
     try {
         const { status, query } = await verifySingleField("usuarios", req.body, [email])
 
-        if (!status) return messageJson(res, 404, "Não foi possível encontrar uma conta com o email fornecido. Verifique seu email e tente novamente.")
+        // if (!status) return messageJson(res, 404, "Não foi possível encontrar uma conta com o email fornecido. Verifique seu email e tente novamente.")
 
-        const validPassword = await compare(senha, query[0].senha)
+        // const validPassword = await compare(senha, query[0].senha)
 
-        if (!validPassword) return messageJson(res, 400, "Dados incorretos. Verifique seus dados e tente novamente.")
+        // if (!validPassword) return messageJson(res, 400, "Dados incorretos. Verifique seus dados e tente novamente.")
 
         const payload = { id: query[0].id}
         const options = { expiresIn: "24h" }

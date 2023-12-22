@@ -3,7 +3,8 @@ const  { messageJson, verifySingleField }  = require("../utils/utils");
 const { hash } = require("bcrypt")
 
 const getAllAccounts = async (req, res) => {
-    return messageJson(res, 200, "ok")
+    const getAll = await knex("usuarios").orderBy("id", "ASC")
+    return messageJson(res, 200, getAll)
 }
 
 const createAccount = async (req, res) => {
@@ -44,9 +45,8 @@ const deleteAccount = async (req, res) => {
 
 }
 
-const getBalance = async (req, res) => { 
+const getBalance = async (req, res) => messageJson(res, 200, { saldo: req.user.saldo })
 
-}
 
 const getExtract = async (req, res) => { 
     const { query: { mes, ano }, user: { id } } = req

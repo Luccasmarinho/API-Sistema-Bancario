@@ -13,6 +13,9 @@ const schemas = {
         email: joi.string().email().required(),
         senha: joi.string().min(8).max(20).required()
     }),
+    delete: joi.object({
+        senha: joi.string().min(8).max(20).required()
+    }),
     deposit: joi.object({
         numero_conta: joi.number().positive().integer().required(),
         valor: joi.number().min(1).integer().required()

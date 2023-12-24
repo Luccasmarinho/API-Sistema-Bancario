@@ -17,7 +17,7 @@ const validatePassword = async (req, res, next) => {
             return next()
         }
 
-        if (req.path.includes("/transacoes")) {
+        if (req.path.includes("/transacoes") || req.method == 'DELETE') {
             const { user: { id } } = req
 
             const [row] = await knex("usuarios").where({ id })

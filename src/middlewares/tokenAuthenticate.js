@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const tokenAuthentication = async (req, res, next) => {
     const { headers: { authorization } } = req
 
-    if (!authorization) return messageJson(res, 400, "Não autorizado")
+    if (!authorization) return messageJson(res, 401, "Não autorizado")
 
     const token = authorization.split(" ")[1]
 
@@ -19,9 +19,9 @@ const tokenAuthentication = async (req, res, next) => {
 
         return next()
     } catch (error) {
-        if (error.message == "invalid signature") return messageJson(res, 404, "Usuário não encontrado");
+        if (error.message == "invalid signature") return messageJson(res, 401, "Usuário não autorizado.");
 
-        return messageJson(res, 500, "Não autorizado.");
+        return messageJson(res, 401, "Não autorizado.");
     }
 }
 

@@ -1,5 +1,5 @@
 const knex = require("../database/connection");
-const  { messageJson, verifySingleField }  = require("../utils/utils");
+const { messageJson, verifySingleField, compareId } = require("../utils/utils");
 const { hash } = require("bcrypt")
 
 const getAllAccounts = async (req, res) => {
@@ -8,10 +8,10 @@ const getAllAccounts = async (req, res) => {
 }
 
 const createAccount = async (req, res) => {
-    const { body: {cpf, email, senha } } = req
+    const { body: { cpf, email, senha } } = req
 
     try {
-        const { status, message }  = await verifySingleField("usuarios", req.body, [email, cpf])
+        const { status, message } = await verifySingleField("usuarios", req.body, [email, cpf])
 
         if (status) return messageJson(res, 400, message)
 
@@ -27,7 +27,7 @@ const createAccount = async (req, res) => {
 
         const [insertUser] = await knex("usuarios").insert(user).returning(["id", "nome", "email", "saldo"])
 
-       return messageJson(res, 200, insertUser)
+        return messageJson(res, 200, insertUser)
     } catch (error) {
         const codeError = "42P01"
         const errorName = error.message.split(" ")[3]
@@ -42,45 +42,59 @@ const updateAccount = async (req, res) => {
 }
 
 const deleteAccount = async (req, res) => {
+    const { params: { numeroConta }, user: { saldo, id } } = req
 
+    const { status } = compareId(id, numeroConta)
+
+    if (!status) return messageJson(res, 400, "Número da conta incorreto.")
+
+    if (saldo > 0) return messageJson(res, 400, "A conta só pode ser removida se o saldo for zero.")
+
+    try {
+        await knex("usuarios").delete().where({ id: numeroConta })
+        return messageJson(res, 204)
+    } catch (error) {
+        console.log(error);
+        return messageJson(res, 500, "Erro interno do servidor.")
+    }
 }
 
 const getBalance = async (req, res) => messageJson(res, 200, { saldo: req.user.saldo })
 
 
-const getExtract = async (req, res) => { 
+const getExtract = async (req, res) => {
     const { query: { mes, ano }, user: { id } } = req
 
     const likeCondition = !mes || mes == null
-    ? `%${ano}%`
-    : `%${mes.padStart(2, "0")}/${ano}%`
+        ? `%${ano}%`
+        : `%${mes.padStart(2, "0")}/${ano}%`
 
     try {
         const depositos = await knex("usuarios")
-        .select("depositar.*")
-        .join("depositar", "usuarios.id", "=", "depositar.numero_conta")
-        .where("usuarios.id", id)
-        .whereLike("depositar.data", likeCondition)
+            .select("depositar.*")
+            .join("depositar", "usuarios.id", "=", "depositar.numero_conta")
+            .where("usuarios.id", id)
+            .whereLike("depositar.data", likeCondition)
 
         const saques = await knex("usuarios")
-        .select("sacar.*")
-        .join("sacar", "usuarios.id", "=", "sacar.numero_conta")
-        .where("usuarios.id", id)
-        .whereLike("sacar.data", likeCondition)
+            .select("sacar.*")
+            .join("sacar", "usuarios.id", "=", "sacar.numero_conta")
+            .where("usuarios.id", id)
+            .whereLike("sacar.data", likeCondition)
 
         const transferenciasEnviadas = await knex("usuarios")
-        .select("transferir.*")
-        .join("transferir", "usuarios.id", "=", "transferir.numero_conta_origem")
-        .where("usuarios.id", id)
-        .whereLike("transferir.data", likeCondition)
-    
-        const transferenciasRecebidas = await knex("usuarios")
-        .select("transferir.*")
-        .join("transferir", "usuarios.id", "=", "transferir.numero_conta_destino")
-        .where("usuarios.id", id)
-        .whereLike("transferir.data", likeCondition)
+            .select("transferir.*")
+            .join("transferir", "usuarios.id", "=", "transferir.numero_conta_origem")
+            .where("usuarios.id", id)
+            .whereLike("transferir.data", likeCondition)
 
-    
+        const transferenciasRecebidas = await knex("usuarios")
+            .select("transferir.*")
+            .join("transferir", "usuarios.id", "=", "transferir.numero_conta_destino")
+            .where("usuarios.id", id)
+            .whereLike("transferir.data", likeCondition)
+
+
         const objExtract = {
             depositos,
             saques,
@@ -93,7 +107,7 @@ const getExtract = async (req, res) => {
         console.log(error);
         return messageJson(res, 500, "Erro interno do servidor.")
     }
-   
+
 }
 
 module.exports = {

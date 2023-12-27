@@ -9,6 +9,14 @@ const schemas = {
         telefone: joi.string().required(),
         senha: joi.string().min(8).max(20).required()
     }),
+    update: joi.object({
+        nome: joi.string().required(),
+        data_nascimento: joi.string().required(),
+        email: joi.string().email().required(),
+        telefone: joi.string().required(),
+        senha: joi.string().min(8).max(20).required(),
+        nova_senha: joi.string().min(8).max(20).required()
+    }),
     login: joi.object({
         email: joi.string().email().required(),
         senha: joi.string().min(8).max(20).required()
